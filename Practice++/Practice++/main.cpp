@@ -1,10 +1,27 @@
 #include <iostream>
+#include <string>
 
-int stack_simulation();
+class Entity {
+public:
+	int X, Y;
+	void Print(){}
+public:
+	Entity() {
+		X = 0;
+		Print();
+	}
+};
 
-void main() {
-	std::cout << "I will be using this repository to practice C++." << std::endl;
-	stack_simulation();
-	std::cin.get();
+class Player :public Entity {
+	Player() {
+		X = 2;
+		Print();
+	}
+};
+
+int main() {
+	Entity e;
+	e.Print();
+	e.X = 2;
 	std::cin.get();
 }
