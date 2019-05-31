@@ -1,18 +1,13 @@
 #include <iostream>
-#include <array>
-class Entity {
-	static const int size=5;
-	int example[size];
-	std::array<int, 5> another;
-public:
-	Entity()
-	{
-		for (int i = 0; i < another.size; i++)
-		example[i] = 2;
-	}
-};
+#include <string>
+
+void PrintString(const std::string& string) {
+	std::cout << string << std::endl;
+}
 
 int main() {
-	Entity e;
+	std::string name = std::string ("Cherno") + " hello!";
+	bool contains = name.find("no") != std::string::npos;
+	std::cout << name << std::endl;
 	std::cin.get();
 }
