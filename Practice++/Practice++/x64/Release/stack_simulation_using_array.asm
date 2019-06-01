@@ -14,22 +14,9 @@ PUBLIC	??_C@_0BE@HFOBAJI@Element?5at?5top?5is?3?5?$AA@	; `string'
 PUBLIC	??_C@_0BB@MKODCLNH@Stack?5is?5empty?$CB?6?$AA@	; `string'
 PUBLIC	??_C@_05BIEBAFMA@?5is?3?5?$AA@			; `string'
 PUBLIC	??_C@_0BD@HAEGGMLF@Element?5at?3?5INDEX?5?$AA@	; `string'
-EXTRN	__imp_?rdstate@ios_base@std@@QEBAHXZ:PROC
-EXTRN	__imp_?good@ios_base@std@@QEBA_NXZ:PROC
-EXTRN	__imp_?flags@ios_base@std@@QEBAHXZ:PROC
-EXTRN	__imp_?width@ios_base@std@@QEBA_JXZ:PROC
-EXTRN	__imp_?width@ios_base@std@@QEAA_J_J@Z:PROC
-EXTRN	__imp_?fill@?$basic_ios@DU?$char_traits@D@std@@@std@@QEBADXZ:PROC
-EXTRN	__imp_?rdbuf@?$basic_ios@DU?$char_traits@D@std@@@std@@QEBAPEAV?$basic_streambuf@DU?$char_traits@D@std@@@2@XZ:PROC
-EXTRN	__imp_?setstate@?$basic_ios@DU?$char_traits@D@std@@@std@@QEAAXH_N@Z:PROC
-EXTRN	__imp_?_Osfx@?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAAXXZ:PROC
-EXTRN	__imp_?tie@?$basic_ios@DU?$char_traits@D@std@@@std@@QEBAPEAV?$basic_ostream@DU?$char_traits@D@std@@@2@XZ:PROC
-EXTRN	__imp_?sputc@?$basic_streambuf@DU?$char_traits@D@std@@@std@@QEAAHD@Z:PROC
-EXTRN	__imp_?sputn@?$basic_streambuf@DU?$char_traits@D@std@@@std@@QEAA_JPEBD_J@Z:PROC
-EXTRN	__imp___std_terminate:PROC
+EXTRN	__imp_??6?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAAAEAV01@H@Z:PROC
 EXTRN	??_U@YAPEAX_K@Z:PROC				; operator new[]
 EXTRN	??3@YAXPEAX_K@Z:PROC				; operator delete
-EXTRN	__imp_?uncaught_exception@std@@YA_NXZ:PROC
 EXTRN	??_V@YAXPEAX@Z:PROC				; operator delete[]
 ;	COMDAT ??_C@_0BD@HAEGGMLF@Element?5at?3?5INDEX?5?$AA@
 CONST	SEGMENT
@@ -73,5 +60,4 @@ CONST	ENDS
 CONST	SEGMENT
 ??_C@_0BE@DHDMOABD@Pozvan?5destruktor?4?6?$AA@ DB 'Pozvan destruktor.', 0aH
 	DB	00H						; `string'
-CONST	ENDS
 END

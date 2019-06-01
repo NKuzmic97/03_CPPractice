@@ -1,7 +1,7 @@
 ﻿  main.cpp
   Generating code
-  1 of 2 functions (50.0%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  13 of 84 functions (15.5%) were compiled, the rest were copied from previous compilation.
+    7 functions were new in current compilation
+    10 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Practice++.vcxproj -> G:\Github\NKuzmic97\Practice.cpp\Practice++\x64\Release\PracticeCPP.exe
