@@ -16,12 +16,11 @@ public:
 
 
 int main() {
-	Entity* eptr;
-	{
-		Entity* entity = new Entity("Cherno");
-		eptr = entity;
-		std::cout << eptr->GetName() << std::endl;
-	}
+	int a = 2;
+	int* b = new int[50];
+
+	Entity* entity = new(b) Entity();
+	delete entity;
+	delete[] b;
 	std::cin.get();
-	delete eptr;
 }
