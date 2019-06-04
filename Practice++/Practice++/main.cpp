@@ -1,26 +1,29 @@
 #include <iostream>
 #include <string>
 
-void PrintEntity(const Entity& e);
-
 class Entity {
 public:
-	int x, y;
-	Entity(int x, int y) {
-		this->x = x;
-		this->y = y;
-		Entity& e = *this;
-		PrintEntity(*this);
-		delete this;
+	Entity() {
+		std::cout << "Created Entity!" << std::endl;
 	}
-	int GetX() const {
-		const Entity& e = *this;
+	~Entity() {
+		std::cout << "Destroyed Entity!" << std::endl;
 	}
 };
 
-void PrintEntity(Entity& e) {
-
-}
+class ScopedPtr {
+private:
+	Entity* m_Ptr;
+public:
+	ScopedPtr(Entity* ptr):m_Ptr(ptr){}
+	~ScopedPtr() { delete m_Ptr; }
+};
 
 int main() {
+
+	{
+		ScopedPtr e = new Entity();
+	}
+
+	std::cin.get();
 }
