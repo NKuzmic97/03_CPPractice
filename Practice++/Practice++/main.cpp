@@ -1,22 +1,18 @@
 #include <iostream>
-#include <string>
-
+#include <array>
 class Entity {
-	std::string m_Name;
-	int m_Age;
+	static const int size=5;
+	int example[size];
+	std::array<int, 5> another;
 public:
-	 Entity(const std::string& name):m_Name(name){}
-	 Entity(int age):m_Name("Unknown"),m_Age(age){}
+	Entity()
+	{
+		for (int i = 0; i < another.size; i++)
+		example[i] = 2;
+	}
 };
 
-void PrintEntity(const Entity& entity) {
-
-}
-
 int main() {
-	PrintEntity(22);
-	PrintEntity(std::string("Cherno"));
-	Entity a = "Cherno";
-	Entity b =(Entity) 22;
+	Entity e;
 	std::cin.get();
 }
