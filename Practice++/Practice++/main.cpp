@@ -1,18 +1,26 @@
 #include <iostream>
-#include <array>
+#include <string>
+
+using String = std::string;
+
 class Entity {
-	static const int size=5;
-	int example[size];
-	std::array<int, 5> another;
+private:
+	String m_Name;
 public:
-	Entity()
-	{
-		for (int i = 0; i < another.size; i++)
-		example[i] = 2;
+	Entity() :m_Name("Unknown") { std::cout << "0"; }
+	Entity(const String& name):m_Name(name){
+		std::cout << "1";
 	}
+	const String& GetName() const { return m_Name; }
 };
 
+
 int main() {
-	Entity e;
+	int a = 2;
+	int* b = new int[50];
+
+	Entity* entity = new(b) Entity();
+	delete entity;
+	delete[] b;
 	std::cin.get();
 }
