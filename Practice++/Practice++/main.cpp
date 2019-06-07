@@ -1,49 +1,66 @@
 #include <iostream>
-#include <string>
 
-class String {
+class Osoba {
 private:
-	char* m_Buffer;
-	unsigned int m_Size;
+	const char* ime;
+	const char* prezime;
+	int* godiste;
+	static int br_osoba;
 public:
-	String(const char* string) {
-		m_Size = strlen(string);
-		m_Buffer = new char[m_Size+1];
-		memcpy(m_Buffer, string, m_Size);
-		m_Buffer[m_Size] = 0;
+	Osoba() :ime("Nema imena."), prezime("Nema prezimena."), godiste(new int(-1)){
+		br_osoba++;
 	}
-	~String() {
-		delete[] m_Buffer;
+	Osoba(const char* ime, const char* prezime, int godiste) :ime(ime), prezime(prezime), godiste(new int(godiste)) {
+		br_osoba++;
 	}
-	char& operator[](unsigned int index) {
-		return m_Buffer[index];
+	~Osoba() {
+		delete godiste;
+		std:: cout << "Pozvan destruktor.";
 	}
-	//String(const String& other) {
-		//memcpy(this, &other, sizeof(String));
-	String(const String& other):m_Size(other.m_Size) {
-		std::cout << "Copy construcotr" << std::endl;
-		m_Buffer = new char[m_Size + 1];
-		memcpy(m_Buffer, other.m_Buffer, m_Size+1);
+	const char* GetIme() const {
+		return (*this).ime;
 	}
-	friend std::ostream& operator<<(std::ostream& stream, const String& string);
+	const char* GetPrezime() const {
+		return (*this).prezime;
+	}
+	const int& GetGodiste() const {
+		return *(this->godiste);
+	}
+	friend std::ostream& operator<<(std::ostream& stream, const Osoba& osoba);
+};
+int Osoba::br_osoba = 0;
+
+class ScopedPtr {
+private:
+	Osoba* osoba;
+public:
+	ScopedPtr(const char* ime,const char* prezime, int godiste){
+
+		osoba = new Osoba(ime, prezime, godiste);
+	}
+	~ScopedPtr() {
+		std::cout << "Pozvan destruktor ScopedPtr" << std::endl;
+		delete osoba;
+	}
+	const Osoba& GetOsoba() const {
+		return *osoba;
+	}
 };
 
-std::ostream& operator<<(std::ostream& stream, const String& string) {
-	stream << string.m_Buffer;
+std::ostream& operator<<(std::ostream& stream,const Osoba& osoba) {
+	stream << "Moje ime je: " << osoba.ime << " Prezime: " << osoba.prezime << " Godiste: " << osoba.GetGodiste() << std::endl;
+	stream << "Broj osoba: " << Osoba::br_osoba << std::endl;
 	return stream;
 }
 
-void PrintString(const String& string) {
-	String copy = string;
-	std::cout << copy << std::endl;
-}
-
 int main() {
-	String string = "Cherno";
-	std::cout << string << std::endl;
-	String second = string;
-	second[2] = 'a';
-	PrintString(string);
-	PrintString(second);
+	std::cout << "Zdravo svete." << std::endl;
+	{
+		ScopedPtr sp1("Nemanja", "Kuzmic", 1997);
+		ScopedPtr sp2 = { "Milos", "Kuzmic", 2002 };
+		std::cout << sp1.GetOsoba();
+		std::cout << sp2.GetOsoba();
+	}
+
 	std::cin.get();
 }
