@@ -3,6 +3,10 @@
 #include <vector>
 struct Vertex {
 	float x, y, z;
+	Vertex(float x,float y,float z):x(x),y(y),z(z){}
+	Vertex(const Vertex& vertex) {
+		std::cout << "Copied!" << std::endl;
+	}
 };
 
 std::ostream& operator<<(std::ostream& stream, const Vertex& vertex) {
@@ -16,15 +20,10 @@ void Function(const std::vector<Vertex>& vertices) {
 
 int main() {
 	std::vector<Vertex> vertices;
-	Function(vertices);
+	vertices.reserve(3);
 	vertices.push_back({ 1,2,3 });
-	vertices.push_back({ 4,5,6 });
-	for (int i = 0; i < vertices.size(); i++)
-		std::cout << vertices[i] << std::endl;
+	vertices.emplace_back(4,5,6);
+	vertices.emplace_back(7,8,9);
 
-	vertices.erase(vertices.begin() + 1);
-
-	for (Vertex& v : vertices)
-	std::cout << v << std::endl;
 	std::cin.get();
 }
