@@ -1,42 +1,30 @@
 #include <iostream>
-
-class Entity {
-public:
-	int x;
-	void Print() const {
-		std::cout << "Hello!" << std::endl;
-	}
-};
-
-class ScopedPtr {
-private:
-	Entity* m_Obj;
-public:
-	ScopedPtr(Entity* entity) :m_Obj(entity) {
-	}
-	ScopedPtr() {
-		delete m_Obj;
-	}
-	Entity* GetObject() { return m_Obj; }
-	Entity* operator->() {
-		return m_Obj;
-	}
-	const Entity* operator->() const {
-		return m_Obj;
-	}
-};
-
-
-struct Vector3 {
+#include <string>
+#include <vector>
+struct Vertex {
 	float x, y, z;
 };
 
-int main() {
-	//const ScopedPtr entity = new Entity();
-	//entity->Print();
+std::ostream& operator<<(std::ostream& stream, const Vertex& vertex) {
+	stream << vertex.x << ", " << vertex.y << ", " << vertex.z;
+	return stream;
+}
 
-	Vector3 vect;
-	int offset = (int)&((Vector3*)nullptr)->z;
-	std::cout << offset << std::endl;
+void Function(const std::vector<Vertex>& vertices) {
+
+}
+
+int main() {
+	std::vector<Vertex> vertices;
+	Function(vertices);
+	vertices.push_back({ 1,2,3 });
+	vertices.push_back({ 4,5,6 });
+	for (int i = 0; i < vertices.size(); i++)
+		std::cout << vertices[i] << std::endl;
+
+	vertices.erase(vertices.begin() + 1);
+
+	for (Vertex& v : vertices)
+	std::cout << v << std::endl;
 	std::cin.get();
 }
