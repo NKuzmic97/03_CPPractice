@@ -1,30 +1,12 @@
 #include <iostream>
-#include <string>
-
-class Entity {
-public:
-	virtual void PrintName(){
-		std::cout << "Hello! I'm entity.";
-	}
-};
-
-class Player : public Entity {};
-
-class Enemy:public Entity{};
 
 int main() {
-	Player* player = new Player();
-
-	Entity* actuallyPlayer = player;
-	Entity* actuallyEnemy = new Enemy();
-
-	Player* p = dynamic_cast<Player*>(actuallyEnemy);
-	std::cout << p << "\n";
-	p = dynamic_cast<Player*>(actuallyPlayer);
-	std::cout << p << "\n";
-	
-	p->PrintName();
-
-	// End of program
+	void* ptr = new int(5);
+	std::cout <<"ptr points to: " << ptr << std::endl;
+	std::cout <<"address of ptr pointer: " << &ptr << std::endl;
+	std::cout <<"size of void pointer: " << sizeof(ptr) << std::endl;
+	//std::cout << *ptr << std::endl; // Doesn't work. Unable to dereference void pointers.
+	std::cout <<"casted void* to int*: " << static_cast<int*>(ptr) << std::endl;
+	std::cout <<"dereferenced casted void* to int*: " << *static_cast<int*>(ptr) << std::endl;
 	std::cin.get();
 }
