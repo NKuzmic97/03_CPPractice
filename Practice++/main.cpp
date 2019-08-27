@@ -1,60 +1,31 @@
 #include <iostream>
-#include <list>
-#include <stdlib.h>
-#include <assert.h>
+#include "Practice++/Interface/Interface.h"
 
-using namespace std;
-
-class HashTable {
-private:
-	// Number of buckets to store elements
-	int buckets;
-	// Pointer to said buckets
-	list<int>* table;
-public:
-	// Simple constructor
-	HashTable(int b) {
-		// Allocate space for the number of buckets asked for
-		buckets = b;
-		table = new list<int>[buckets];
-	}
-
-	// Insert into hash table
-	void insert(int d);
-	
-	// Print out the hash table
-	void print();
-};
-
-void HashTable::insert(int d) {
-	// Simple hash function is just modluo number of buckets
-	int bucket = d % buckets;
-	
-	// Insert into hash table bucket
-	table[bucket].push_back(d);
-}
-
-void HashTable::print() {
-	for (int i = 0; i < buckets; i++) {
-		cout << "| Bucket " << i << " | ";
-		for (auto j : table[i]) {
-			cout << "-> | " << j << " | ";
-		}
-		cout << endl;
-	}
-}
 
 int main() {
-	// Create a hash table with 8 buckets;
-	HashTable ht(8);
-	// Set the random number seed
-	srand(2);
-	// Insert 20 random integers
-	for (int i = 0; i < 20; i++) {
-		ht.insert(rand() % 100);
+	// Create a new linked list
+	LinkedList ll;
+	// Insert a few nodes, alternating at head and tail
+	for (int i = 0; i < 5; i++) {
+		if (i % 2) {
+			// insert at head on odd numbers
+			ll.insert_head(i);
+		}
+		else {
+			// Insert at tail on even numbers
+			ll.insert_tail(i);
+		}
 	}
-	// Print the state of the hash table
-	ht.print();
+
+	// Insert at the beginning of the list
+	ll.insert_position(5, 2);
+	// Delete the element we just put in
+	ll.delete_position(2);
+	// Delete the head
+	ll.delete_head();
+	// Delete the tail
+	ll.delete_tail();
+
 
 	return 0;
 }
