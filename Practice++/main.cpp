@@ -1,114 +1,60 @@
 #include <iostream>
-#include <string>
+#include <list>
+#include <stdlib.h>
+#include <assert.h>
 
-enum class ErrorType {
-	NoError,
-	FirstWordContainsNumber,
-	SecondWordContainsNumber,
-	WordsNotSameLength
+using namespace std;
+
+class HashTable {
+private:
+	// Number of buckets to store elements
+	int buckets;
+	// Pointer to said buckets
+	list<int>* table;
+public:
+	// Simple constructor
+	HashTable(int b) {
+		// Allocate space for the number of buckets asked for
+		buckets = b;
+		table = new list<int>[buckets];
+	}
+
+	// Insert into hash table
+	void insert(int d);
+	
+	// Print out the hash table
+	void print();
 };
 
-ErrorType CheckLength(const char* word1, const char* word2);
-ErrorType CheckForNumbers(const char* word1, const char* word2);
-void SortString(char* word);
-void IsAnagram(const char* word1,const char* word2);
-void CheckForNumberAndLength(const char* word1,const char* word2);
-void Input(const char * word1, const char * word2);
-void ConvertToLowercase(char* word1, char* word2);
+void HashTable::insert(int d) {
+	// Simple hash function is just modluo number of buckets
+	int bucket = d % buckets;
+	
+	// Insert into hash table bucket
+	table[bucket].push_back(d);
+}
+
+void HashTable::print() {
+	for (int i = 0; i < buckets; i++) {
+		cout << "| Bucket " << i << " | ";
+		for (auto j : table[i]) {
+			cout << "-> | " << j << " | ";
+		}
+		cout << endl;
+	}
+}
 
 int main() {
-	// Code to check are two words anagrams
-
-	// User writes two words.
-	char word1[20];
-	char word2[20];
-
-	// Gets input
-	Input(word1, word2);
-
-	//Checks for number in words and if is the same length
-	CheckForNumberAndLength(word1, word2);
-
-// Algorithm checks whetever the words are anagram
-
-	// Convert all chars to lowercase
-	ConvertToLowercase(word1, word2);
-
-	//Sort letters by ascending order.
-	SortString(word1);
-	SortString(word2);
-
-	//Check if word1 is same as word2.
-	IsAnagram(word1, word2);
-}
-
-void CheckForNumberAndLength(const char* word1, const char* word2)
-{
-	if (
-		CheckForNumbers(word1, word2) != ErrorType::NoError
-		&&
-		CheckLength(word1, word2) != ErrorType::NoError
-		) 
-	{
-		Input(word1,word2);
+	// Create a hash table with 8 buckets;
+	HashTable ht(8);
+	// Set the random number seed
+	srand(2);
+	// Insert 20 random integers
+	for (int i = 0; i < 20; i++) {
+		ht.insert(rand() % 100);
 	}
-}
-void Input(const char * word1, const char * word2)
-{
-	std::cout << "Enter first word: ";
-	std::cin >> const_cast<char*>(word1);
-	std::cout << "Enter second word: ";
-	std::cin >> const_cast<char*>(word2);
-}
-void IsAnagram(const char* word1, const char* word2)
-{
-	for (int i = 0; i < strlen(word1); i++) {
-		if (word1[i] != word2[i]) break;
-		std::cout << "Words are anagrams!";
-		return;
-	}
-	std::cout << "Word not anagrams!\n";
-	return;
-}
-void SortString(char* word)
-{
-	for (int i = 0; i < strlen(word) - 1; i++) {
-		for (int j = i + 1; j < strlen(word); j++) {
-			if (word[i] > word[j]) {
-				char temp = word[j];
-				word[j] = word[i];
-				word[i] = temp;
-			}
-		}
-	}
-}
-void ConvertToLowercase(char* word1, char* word2) {
-	for (int i = 0; i < strlen(word1); i++) {
-		word1[i] = tolower(word1[i]);
-		word2[i] = tolower(word2[i]);
-	}
-}
-ErrorType CheckForNumbers(const char* word1, const char* word2) {
-	//Iterate over whole word1.
-	for (int i = 0; i != '\0'; i++) {
-		if (isdigit(word1[i])) {
-			std::cout << "Error! You have a digit in first word! \n";
-			return ErrorType::FirstWordContainsNumber;
-		}
-		if (isdigit(word2[i])) {
-			std::cout << "Error! You have a digit in second word! \n";
-			return ErrorType::SecondWordContainsNumber;
-		}
-	}
-	return ErrorType::NoError;
-}
-ErrorType CheckLength(const char* word1, const char* word2) {
-	int LengthWord1 = 0, LengthWord2 = 0;
-	// Iterate over two words at the same time.
-	for (int i = 0; i != '\0'; i++) {
-		if (word1[i] != '\0') LengthWord1++;
-		if (word2[i] != '\0') LengthWord2++;
-	}
-	if (LengthWord1 != LengthWord2) return ErrorType::WordsNotSameLength;
-	return ErrorType::NoError;
+	// Print the state of the hash table
+	ht.print();
+
+	return 0;
 }
