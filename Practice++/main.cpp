@@ -10,41 +10,29 @@ void swap(int* a, int* b) {
 	*b = temp;
 }
 
-// Performs insertion sort on "array"
-// Takes an array, and it's length as arguments
-
-void insertion_sort(int* array, int n) {
-	// Keep track the key and value of the current minimum
-	int min_key;
-	// Skip tirival last iteration (only 1 element left to sort)
+// Performs bubble sort
+// Takes an array and its length as arguments
+void bubble_sort(int *array, int n) {
+	// Skips tirival last iteration
 	for (int i = 0; i < n - 1; i++) {
-		// Set current index to be minimum
-		min_key = i;
-		// Loop over remaining elements
-		for (int j = i + 1; j < n; j++) {
-			if (array[j] < array[min_key])
-				min_key = j;
+		// Propagate largest remaining element to the top
+		// Remove "i" sorted elements each iteration
+		for (int j = 0; j < n - 1 - i; j++) {
+			if (array[j] > array[j + 1]) {
+				std::cout << "Swapping index" << j << " and " << j + 1 << std::endl;
+				print_swap(array, j, j + 1, n);
+				swap(&array[j], &array[j + 1]);
+				print_array(array, n);
+			}
 		}
-		// Swap for the min element
-		std::cout << "Swapping index " << i << " with index " << min_key << std::endl;
-		print_swap(array, i, min_key, n);
-		swap(&array[i], &array[min_key]);
-		print_array(array, n);
 	}
 }
 
 int main() {
-	// Create an array of size N
-	const int n = 10;
+	// Allocate an array of n size
+	const int n = 8;
 	int array[n];
 
-	srand(0);
-
-	// Fill our array with random numbers
-	for (int i = 0; i < n; i++) {
-		array[i] = rand() % 100;
-	}
-
-	// Sort the array
-	insertion_sort(array, n);
+	for (int i = 0; i < n; i++) array[i] = rand() % 100;
+	bubble_sort(array, n);
 }
