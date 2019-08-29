@@ -10,21 +10,30 @@ void swap(int* a, int* b) {
 	*b = temp;
 }
 
-// Performs bubble sort
+// Performs insertion sort
 // Takes an array and its length as arguments
-void bubble_sort(int *array, int n) {
-	// Skips tirival last iteration
-	for (int i = 0; i < n - 1; i++) {
-		// Propagate largest remaining element to the top
-		// Remove "i" sorted elements each iteration
-		for (int j = 0; j < n - 1 - i; j++) {
-			if (array[j] > array[j + 1]) {
-				std::cout << "Swapping index" << j << " and " << j + 1 << std::endl;
-				print_swap(array, j, j + 1, n);
-				swap(&array[j], &array[j + 1]);
-				print_array(array, n);
-			}
+void insertion_sort(int* array, int n) {
+	// Place each element at the end of the sorted sub-list
+	// into the list (first element is implicitly sorted)
+	int temp;
+	for (int i = 1; i < n; i++) {
+		cout << "Inserting index " << i << endl;
+		print_swap(array, i, i, n);
+		// Save the ith element because shifiting overwrites it
+		temp = array[i];
+
+		// Amount to shift elements by
+		int j = i - 1;
+		// Shift over elements until we find insertion point
+		while ((j >= 0) && (array[j] > temp)) {
+			array[j + 1] = array[j];
+			j--;
 		}
+
+		// .. and insert the value at that spot
+		cout << "Inserting at position " << j + 1 << endl << endl;
+		array[j + 1] = temp;
+		print_array(array, n);
 	}
 }
 
@@ -34,5 +43,6 @@ int main() {
 	int array[n];
 
 	for (int i = 0; i < n; i++) array[i] = rand() % 100;
-	bubble_sort(array, n);
+	insertion_sort(array, n);
+
 }
