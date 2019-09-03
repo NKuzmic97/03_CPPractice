@@ -1,116 +1,87 @@
 #include <iostream>
-#include <vector>
-#include "Practice++/Common.h"
-#include <assert.h>
+#include <stdlib.h>
 
-struct Node {
-	// Pointers to left and right nodes
-	Node* left;
-	Node* right;
 
-	// Data
-	int m_data;
+static int QuickSortCalls = 0;
 
-	// Constructor
-	Node(int data) {
-		m_data = data;
-		left = nullptr;
-		right = nullptr;
-	}
-};
-
-class BinarySearchTree {
-public:
-	// Root node of the tree
-	Node* root;
-	
-	// Simple constructor sets the root to NULL
-	BinarySearchTree() { root = nullptr; }
-
-	// Simple method for inserting a node
-	Node* insert_node(Node* node, int data);
-
-	// Search for a node with m_data "data"
-	Node* search(int data);
-};
-
-// Resursively traverse the tree until the node is nullptr
-// (insertion point)
-Node* BinarySearchTree::insert_node(Node* node, int data) {
-	// Case that we are inserting the node here
-	if (node == nullptr) {
-		std::cout << "X" << std::endl;
-		return new Node(data);
-	}
-	else if (data < node->m_data) {
-		std::cout << "L";
-		node->left = insert_node(node->left, data);
-	}
-	else if (data > node->m_data) {
-		std::cout << "R";
-		node->right = insert_node(node->right, data);
-	}
-	// In case we have duplicate entries (illegal)
-	else {
-		assert(false);
-	}
-	// If this node was not nullptr, return it unchanged
-	return node;
+// Swaps the contents of two pointers
+void swap(int* a, int *b) {
+	int tmp = *a;
+	*a = *b;
+	*b = tmp;
 }
 
-Node* BinarySearchTree::search(int data) {
-	// Temporary node to use for traversal (init. to root)
-	Node* temp = root;
+// Create a sub-array for elements "<=" and ">" than the pivot
+// Takes an array, left index, and pivot index as arguments
 
-	// Keep traversing the tree until the node is found (maybe not)
-	while (temp != nullptr) {
-		// Return the node we are looking for
-		if (data == temp->m_data) {
-			std::cout << "X" << std::endl;
-			return temp;
-		}
-		// Go down to the left path
-		else if(data < temp->m_data){
-			std::cout << "L" << std::endl;
-			temp = temp->left;
-		}
-		// Go down to the right path
-		else {
-			std::cout << "R";
-			temp = temp->right;
+int partition(int *array, int left, int pivot) {
+	// Start with a sub-array that is empty
+	int low = left - 1;
 
+	// Compare all numbers before the pivot
+	int high = pivot - 1;
+
+	// Go over all elements in sub-array
+	for (int j = left; j <= high; j++) {
+		// Does this element go in the "<=" sub-array?
+		if (array[j] <= array[pivot]) {
+			// Move over marker of sub-array
+			low++;
+			// Swap the element into position
+			// TODO I dont understand best this line
+			swap(&array[low], &array[j]);
 		}
 	}
-	// We didn't find the node..
-	return nullptr;
+	// Move the pivot into the correct position
+	swap(&array[low + 1], &array[pivot]);
+	// Return the index of the element in the correct place
+	return low + 1;
+}
+
+// Recursive function that partitions the array into "<=" and ">"
+// sub-arrays and calls quicksort on them
+void quicksort(int* array, int leftIndex, int pivotIndex) {
+	QuickSortCalls++;
+	// Recursively called until only a single element left
+	if (leftIndex < pivotIndex) {
+		// Partition the array into "<=" and ">" sub-arrays
+		int newPivot = partition(array, leftIndex, pivotIndex);
+		// Sort the sub-arrays via recursive calls
+		// Sort the "<=" sub-array
+		quicksort(array, leftIndex, newPivot - 1);
+		// Sort the ">" sub-array
+		quicksort(array, newPivot + 1, pivotIndex);
+	}
 }
 
 
 int main() {
-	// Create a new binary search tree
-	BinarySearchTree bst;
+	// Numbers of elements to sort
+	const int n = 10;
 
-	// Set the random seed 
+	// Set random number seed
 	srand(12345);
 
-	// Insert 10 random nodes
-	int data;
-	vector<int> data_vec;
-	for (int i = 0; i < 10; i++) {
-		// Random number between 0-999
-		data = rand() % 1000;
-		data_vec.push_back(data);
-		std::cout << "Inserting node with data " << data << std::endl;
-		
-		// Insert the node (save the root if it's the first insert)
-		bst.root = bst.insert_node(bst.root, data);
+	// Create an array of random numbers
+	int* array = new int[n];
+	for (int i = 0; i < n; i++) {
+		array[i] = rand() % 100;
+	}
+	// Print out the unsorted array
+	for (int i = 0; i < n; i++) {
+		std::cout << array[i] << " ";
 	}
 	std::cout << std::endl;
 
-	// Search for each of the inserted nodes
-	for (int i : data_vec) {
-		std::cout << "Searching for node with data " << i << std::endl;
-		bst.search(i);
+
+	// Sort the array using quicksort
+	quicksort(array, 0, n - 1);
+
+	// Print out the sorted array
+	for (int i = 0; i < n; i++) {
+		std::cout << array[i] << " ";
 	}
+	std::cout << std::endl << QuickSortCalls;
+
 	return 0;
 }
