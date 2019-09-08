@@ -1,7 +1,6 @@
 #include <iostream>
 #include <stdlib.h>
 
-
 static int QuickSortCalls = 0;
 
 // Swaps the contents of two pointers
