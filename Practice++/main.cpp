@@ -1,4 +1,5 @@
 #include <conio.h>
+#include <fstream>
 
 void print(const char* msg) {
 	for (; *msg != 0; msg++) {
@@ -62,19 +63,15 @@ void int2str(int number, char* buffer, int size) {
 }
 
 int main() {
-	print("Enter a number: ");
-	char answer[69];
-	read(answer, 69);
+	std::ifstream in("boi.dat", std::ios::binary);
 
-	print("\nFibonacci number <");
-	print(answer);
-	print("> is: ");
+	int data;
+	in.read(reinterpret_cast<char*>(&data), sizeof(int));
 
-	const int fibNumber = fib(str2int(answer));
-
-	int2str(fibNumber, answer, 69);
-
-	print(answer);
-
+	char buffer[256];
+	int2str(data, buffer, 256);
+	print(buffer);
+	
 	while (!_kbhit());
+	return 0;
 }
