@@ -1,86 +1,80 @@
-#include <iostream>
-#include <stdlib.h>
+#include <conio.h>
 
-static int QuickSortCalls = 0;
-
-// Swaps the contents of two pointers
-void swap(int* a, int *b) {
-	int tmp = *a;
-	*a = *b;
-	*b = tmp;
-}
-
-// Create a sub-array for elements "<=" and ">" than the pivot
-// Takes an array, left index, and pivot index as arguments
-
-int partition(int *array, int left, int pivot) {
-	// Start with a sub-array that is empty
-	int low = left - 1;
-
-	// Compare all numbers before the pivot
-	int high = pivot - 1;
-
-	// Go over all elements in sub-array
-	for (int j = left; j <= high; j++) {
-		// Does this element go in the "<=" sub-array?
-		if (array[j] <= array[pivot]) {
-			// Move over marker of sub-array
-			low++;
-			// Swap the element into position
-			// TODO I dont understand best this line
-			swap(&array[low], &array[j]);
-		}
-	}
-	// Move the pivot into the correct position
-	swap(&array[low + 1], &array[pivot]);
-	// Return the index of the element in the correct place
-	return low + 1;
-}
-
-// Recursive function that partitions the array into "<=" and ">"
-// sub-arrays and calls quicksort on them
-void quicksort(int* array, int leftIndex, int pivotIndex) {
-	QuickSortCalls++;
-	// Recursively called until only a single element left
-	if (leftIndex < pivotIndex) {
-		// Partition the array into "<=" and ">" sub-arrays
-		int newPivot = partition(array, leftIndex, pivotIndex);
-		// Sort the sub-arrays via recursive calls
-		// Sort the "<=" sub-array
-		quicksort(array, leftIndex, newPivot - 1);
-		// Sort the ">" sub-array
-		quicksort(array, newPivot + 1, pivotIndex);
+void print(const char* msg) {
+	for (; *msg != 0; msg++) {
+		_putch(*msg);
 	}
 }
 
+void read(char* buffer, int maxSize) {
+	const char* const pEnd = buffer + maxSize;
+	for (char c = _getch(); c != 13 && (buffer + 1 < pEnd); c = _getch(), buffer++) {
+		_putch(c);
+		*buffer = c;
+	}
+	*buffer = 0;
+}
+
+int str2int(const char* buffer) {
+	const char* p = buffer;
+	for (; *p >= '0' && *p <= '9'; p++);
+	p--;
+
+	int val = 0;
+	int place = 1;
+	for (; p >= buffer; p--) {
+		val += (*p - '0') * place;
+		place *= 10;
+	}
+
+	return val;
+}
+
+int fib(int n) {
+	if (n == 0 || n == 1 || n == 2) {
+		return n;
+	}
+
+	return fib(n - 1) + fib(n - 2);
+}
+
+void revstr(char *pl) {
+	char* pr = pl;
+	for (; *pr != 0; pr++);
+	pr--;
+
+	for (; pl < pr; pl++, pr--) {
+		const char temp = *pl;
+		*pl = *pr;
+		*pr = temp;
+	}
+}
+
+void int2str(int number, char* buffer, int size) {
+	char* const pStart = buffer;
+	char* const pEnd = buffer + size;
+
+	for (; number > 0 && (buffer + 1 < pEnd); number /= 10, buffer++) {
+		*buffer = '0' + number % 10;
+	}
+	*buffer = 0;
+	revstr(pStart);
+}
 
 int main() {
-	// Numbers of elements to sort
-	const int n = 10;
+	print("Enter a number: ");
+	char answer[69];
+	read(answer, 69);
 
-	// Set random number seed
-	srand(12345);
+	print("\nFibonacci number <");
+	print(answer);
+	print("> is: ");
 
-	// Create an array of random numbers
-	int* array = new int[n];
-	for (int i = 0; i < n; i++) {
-		array[i] = rand() % 100;
-	}
-	// Print out the unsorted array
-	for (int i = 0; i < n; i++) {
-		std::cout << array[i] << " ";
-	}
-	std::cout << std::endl;
+	const int fibNumber = fib(str2int(answer));
 
+	int2str(fibNumber, answer, 69);
 
-	// Sort the array using quicksort
-	quicksort(array, 0, n - 1);
+	print(answer);
 
-	// Print out the sorted array
-	for (int i = 0; i < n; i++) {
-		std::cout << array[i] << " ";
-	}
-	std::cout << std::endl << QuickSortCalls;
-
-	return 0;
+	while (!_kbhit());
 }
