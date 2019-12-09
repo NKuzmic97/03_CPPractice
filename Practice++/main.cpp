@@ -1,9 +1,21 @@
 #include <conio.h>
 #include <fstream>
+#include <cassert>
 
 void print(const char* msg) {
 	for (; *msg != 0; msg++) {
 		_putch(*msg);
+	}
+}
+
+void printFixed(const char* msg, int width) {
+	int n = 0;
+	for (; *msg != 0; msg++) {
+		n++;
+		_putch(*msg);
+	}
+	for(; n < width;n++) {
+		_putch(' ');
 	}
 }
 
@@ -62,16 +74,121 @@ void int2str(int number, char* buffer, int size) {
 	revstr(pStart);
 }
 
+void stringcopy(const char* pSrc, char* pDst, int maxBufferSize) {
+	int n = 0;
+	for(; *pSrc != 0 && (n+1 < maxBufferSize);pSrc++,pDst++,n++) {
+		*pDst = *pSrc;
+	}
+	*pDst = 0;
+}
+
+class Database {
+private:
+	class Entry {
+	public:
+		Entry() = default;
+		Entry(const char* name,int value):value(value) {
+			stringcopy(name, this->name,sizeof(this->name));
+		}
+		void Print() const {
+			printFixed(name, nameBufferSize - 1);
+			_putch('|');
+			for(int i=0;i<value;i++) {
+				_putch('=');
+			}
+			_putch('\n');
+		}
+		void Serialize(std::ofstream& out) const {
+			out.write(name, sizeof(name));
+			out.write(reinterpret_cast<const char*>(&value), sizeof(value));
+		}
+		void Deserialize(std::ifstream& in) {
+			in.read(name, sizeof(name));
+			in.read(reinterpret_cast<char*>(&value), sizeof(value));
+		}
+		
+	private:
+		static constexpr int nameBufferSize = 10;
+		char name[nameBufferSize];
+		int value;
+	};
+public:
+	void Load(const char* filename) {
+		std::ifstream in(filename, std::ios::binary);
+		in.read(reinterpret_cast<char*>(&curNumberEntries), sizeof(curNumberEntries));
+		for (int i = 0; i < curNumberEntries; i++) {
+			entries[i].Deserialize(in	);
+		}
+	}
+	void Save(const char* filename) const {
+		std::ofstream out(filename, std::ios::binary);
+		out.write(reinterpret_cast<const char*>(&curNumberEntries), sizeof(curNumberEntries));
+		for (int i = 0; i < curNumberEntries; i++) {
+			entries[i].Serialize(out);
+		}
+	}
+	void Print() const {
+		for(int i=0;i<curNumberEntries;i++) {
+			entries[i].Print();
+		}
+	}
+	void Add(const char* name, int value) {
+		assert(curNumberEntries < maxNumberEntries);
+		entries[curNumberEntries++] = { name,value };
+	}
+private:
+	static constexpr int maxNumberEntries = 16;
+	Entry entries[maxNumberEntries];
+	int curNumberEntries = 0;
+};
+
+
 int main() {
-	std::ifstream in("boi.dat", std::ios::binary);
-
-	int data;
-	in.read(reinterpret_cast<char*>(&data), sizeof(int));
-
+	Database db;
 	char buffer[256];
-	int2str(data, buffer, 256);
-	print(buffer);
+	char buffer2[256];
+	bool quit = false;
+
+	do {
+		print("(L)oad (S)ave (A)dd or (P)rint ? (Q)uit");
+		char response = _getch();
+		switch (response) {
+			
+		case 'l':
+			print("\nEnter file name: ");
+			read(buffer, sizeof(buffer));
+			db.Load(buffer);
+			_putch('\n');
+			break;
+
+		case 's':
+			print("\nEnter file name: ");
+			read(buffer, sizeof(buffer));
+			db.Save(buffer);
+			_putch('\n');
+			break;
+			
+		case 'a':
+			print("\nEnter name: ");
+			read(buffer, sizeof(buffer));
+			print("\nEnter value: ");
+			read(buffer2, sizeof(buffer2));
+			db.Add(buffer, str2int(buffer2));
+			_putch('\n');
+			break;
+
+		case 'p':
+			print("\n       Beautiful Chart Bitches!");
+			print("\n       ------------------------\n\n");
+			db.Print();
+			_putch('\n');
+			break;
+
+		case 'q':
+			quit = true;
+			break;
+		}	
+	} while (!quit);
 	
-	while (!_kbhit());
 	return 0;
 }
