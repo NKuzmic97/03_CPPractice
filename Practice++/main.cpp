@@ -1,194 +1,185 @@
+#define _CRTDBG_MAP_ALLOC  
+#include <stdlib.h>  
+#include <crtdbg.h>  
 #include <conio.h>
-#include <fstream>
-#include <cassert>
+#include "Practice++/Stack.h"
+#include "Practice++/ChiliString.h"
 
-void print(const char* msg) {
-	for (; *msg != 0; msg++) {
-		_putch(*msg);
+void test1() {
+	Stack s;
+	s.Push(5);
+	s.Push(3);
+	if (s.Pop() == 3 && s.Pop() == 5 && s.Empty()) {
+		chili::print("    Test 1 passed!\n");
+	}
+	else {
+		chili::print("*** Test 1 failed!\n");
 	}
 }
 
-void printFixed(const char* msg, int width) {
-	int n = 0;
-	for (; *msg != 0; msg++) {
-		n++;
-		_putch(*msg);
+void test2() {
+	Stack s;
+	s.Push(5);
+	s.Push(3);
+	s.Push(3);
+	s.Push(3);
+	if (s.Size() == 4) {
+		chili::print("    Test 2 passed!\n");
 	}
-	for(; n < width;n++) {
-		_putch(' ');
-	}
-}
-
-void read(char* buffer, int maxSize) {
-	const char* const pEnd = buffer + maxSize;
-	for (char c = _getch(); c != 13 && (buffer + 1 < pEnd); c = _getch(), buffer++) {
-		_putch(c);
-		*buffer = c;
-	}
-	*buffer = 0;
-}
-
-int str2int(const char* buffer) {
-	const char* p = buffer;
-	for (; *p >= '0' && *p <= '9'; p++);
-	p--;
-
-	int val = 0;
-	int place = 1;
-	for (; p >= buffer; p--) {
-		val += (*p - '0') * place;
-		place *= 10;
-	}
-
-	return val;
-}
-
-int fib(int n) {
-	if (n == 0 || n == 1 || n == 2) {
-		return n;
-	}
-
-	return fib(n - 1) + fib(n - 2);
-}
-
-void revstr(char *pl) {
-	char* pr = pl;
-	for (; *pr != 0; pr++);
-	pr--;
-
-	for (; pl < pr; pl++, pr--) {
-		const char temp = *pl;
-		*pl = *pr;
-		*pr = temp;
+	else {
+		chili::print("*** Test 2 failed!\n");
 	}
 }
 
-void int2str(int number, char* buffer, int size) {
-	char* const pStart = buffer;
-	char* const pEnd = buffer + size;
-
-	for (; number > 0 && (buffer + 1 < pEnd); number /= 10, buffer++) {
-		*buffer = '0' + number % 10;
+void test3() {
+	Stack s;
+	s.Push(5);
+	s.Push(3);
+	s.Pop();
+	s.Push(69);
+	s.Push(69);
+	s.Push(69);
+	s.Push(69);
+	s.Pop();
+	s.Pop();
+	s.Pop();
+	if (s.Size() == 2) {
+		chili::print("    Test 3 passed!\n");
 	}
-	*buffer = 0;
-	revstr(pStart);
+	else {
+		chili::print("*** Test 3 failed!\n");
+	}
 }
 
-void stringcopy(const char* pSrc, char* pDst, int maxBufferSize) {
-	int n = 0;
-	for(; *pSrc != 0 && (n+1 < maxBufferSize);pSrc++,pDst++,n++) {
-		*pDst = *pSrc;
+void test4() {
+	Stack s;
+	s.Push(5);
+	s.Push(3);
+	s.Pop();
+	s.Pop();
+	s.Pop();
+	s.Pop();
+	if (s.Size() == 0) {
+		chili::print("    Test 4 passed!\n");
 	}
-	*pDst = 0;
+	else {
+		chili::print("*** Test 4 failed!\n");
+	}
 }
 
-class Database {
-private:
-	class Entry {
-	public:
-		Entry() = default;
-		Entry(const char* name,int value):value(value) {
-			stringcopy(name, this->name,sizeof(this->name));
-		}
-		void Print() const {
-			printFixed(name, nameBufferSize - 1);
-			_putch('|');
-			for(int i=0;i<value;i++) {
-				_putch('=');
-			}
-			_putch('\n');
-		}
-		void Serialize(std::ofstream& out) const {
-			out.write(name, sizeof(name));
-			out.write(reinterpret_cast<const char*>(&value), sizeof(value));
-		}
-		void Deserialize(std::ifstream& in) {
-			in.read(name, sizeof(name));
-			in.read(reinterpret_cast<char*>(&value), sizeof(value));
-		}
-		
-	private:
-		static constexpr int nameBufferSize = 10;
-		char name[nameBufferSize];
-		int value;
-	};
-public:
-	void Load(const char* filename) {
-		std::ifstream in(filename, std::ios::binary);
-		in.read(reinterpret_cast<char*>(&curNumberEntries), sizeof(curNumberEntries));
-		for (int i = 0; i < curNumberEntries; i++) {
-			entries[i].Deserialize(in	);
-		}
-	}
-	void Save(const char* filename) const {
-		std::ofstream out(filename, std::ios::binary);
-		out.write(reinterpret_cast<const char*>(&curNumberEntries), sizeof(curNumberEntries));
-		for (int i = 0; i < curNumberEntries; i++) {
-			entries[i].Serialize(out);
-		}
-	}
-	void Print() const {
-		for(int i=0;i<curNumberEntries;i++) {
-			entries[i].Print();
-		}
-	}
-	void Add(const char* name, int value) {
-		assert(curNumberEntries < maxNumberEntries);
-		entries[curNumberEntries++] = { name,value };
-	}
-private:
-	static constexpr int maxNumberEntries = 16;
-	Entry entries[maxNumberEntries];
-	int curNumberEntries = 0;
-};
+void test5() {
+	Stack s;
+	s.Push(5);
+	s.Push(3);
 
+	Stack s2 = s;
+	s2.Pop();
+
+	if (s.Size() == 2 
+		&& 
+		s2.Pop() == 5) 
+	{
+		chili::print("    Test 5 passed!\n");
+	}
+	else {
+		chili::print("*** Test 5 failed!\n");
+	}
+}
+
+void test6() {
+	Stack s;
+	s.Push(5);
+	s.Push(3);
+
+	{
+		Stack s2 = s;
+		s2.Pop();
+	}
+
+	if (s.Size() == 2 && s.Pop() == 3) {
+		chili::print("    Test 6 passed!\n");
+	}
+	else {
+		chili::print("*** Test 6 failed!\n");
+	}
+}
+
+void test7() {
+	Stack s;
+	s.Push(5);
+	s.Push(3);
+
+	Stack s2;
+	s2 = s;
+	s2.Pop();
+
+	if (s.Size() == 2 && s2.Pop() == 5) {
+		chili::print("    Test 7 passed!\n");
+	}
+	else {
+		chili::print("*** Test 7 failed!\n");
+	}
+}
+
+void test8() {
+	Stack s;
+	s.Push(5);
+	s.Push(3);
+
+	{
+		Stack s2;
+		s2 = s;
+		s2.Pop();
+	}
+
+	if (s.Size() == 2 && s.Pop() == 3) {
+		chili::print("    Test 8 passed!\n");
+	}
+	else {
+		chili::print("*** Test 8 failed!\n");
+	}
+}
+
+void test9() {
+	Stack s;
+	s.Push(5);
+	s.Push(3);
+
+	{
+		Stack s2;
+		s2.Push(828374);
+		s2.Push(3454);
+		s2 = s;
+		s2.Pop();
+	}
+
+	if (s.Size() == 2 && s.Pop() == 3) {
+		chili::print("    Test 9 passed!\n");
+	}
+	else {
+		chili::print("*** Test 9 failed!\n");
+	}
+}
 
 int main() {
-	Database db;
-	char buffer[256];
-	char buffer2[256];
-	bool quit = false;
+	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+	_CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDERR);
+	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
+	_CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDERR);
+	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
+	_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
 
-	do {
-		print("(L)oad (S)ave (A)dd or (P)rint ? (Q)uit");
-		char response = _getch();
-		switch (response) {
-			
-		case 'l':
-			print("\nEnter file name: ");
-			read(buffer, sizeof(buffer));
-			db.Load(buffer);
-			_putch('\n');
-			break;
-
-		case 's':
-			print("\nEnter file name: ");
-			read(buffer, sizeof(buffer));
-			db.Save(buffer);
-			_putch('\n');
-			break;
-			
-		case 'a':
-			print("\nEnter name: ");
-			read(buffer, sizeof(buffer));
-			print("\nEnter value: ");
-			read(buffer2, sizeof(buffer2));
-			db.Add(buffer, str2int(buffer2));
-			_putch('\n');
-			break;
-
-		case 'p':
-			print("\n       Beautiful Chart Bitches!");
-			print("\n       ------------------------\n\n");
-			db.Print();
-			_putch('\n');
-			break;
-
-		case 'q':
-			quit = true;
-			break;
-		}	
-	} while (!quit);
+	test1();
+	test2();
+	test3();
+	test4();
+	test5();
+	test6();
+	test7();
+	test8();
+	test9();
 	
+	_CrtDumpMemoryLeaks();
+	while (!_kbhit());
 	return 0;
 }
