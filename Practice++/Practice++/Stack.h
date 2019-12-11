@@ -1,130 +1,105 @@
 #pragma once
 
-class LinkedList {
-	class Node {
+class Stack {
+class Node {
 	public:
-		Node(int data):
+		Node(int data, Node* pNext):
 		data(data),
-		next(nullptr),
-		prev(nullptr)
+		next(pNext)
 		{}
+
+		Node(const Node& other):
+		data(other.data)
+		{
+			if(other.next != nullptr) {
+				next = new Node(*other.next);
+			}
+		}
+
+		Node& operator=(const Node&) = delete;
+		int GetData() const { return data; }
 		
 		Node* next = nullptr;
-		Node* prev = nullptr;
 		int data;
+
+		Node* Disconnect() {
+			auto pTemp = next;
+			next = nullptr;
+			return pTemp;
+		}
+		int Count() {
+			if(next != nullptr) {
+				return next->Count() + 1;
+			}
+			else {
+				return 1;
+			}
+		}
+
+		~Node() {
+			delete next;
+			next = nullptr;
+		}
 	};
-	Node* headNode = nullptr;
-	int size = 0;
+	
 public:
 
-	LinkedList() = default;
+	Stack() = default;
 	
-	LinkedList(const LinkedList& other) {
-			headNode = nullptr;
-			Node* otherCurrentNode = other.headNode;
-		
-			while(otherCurrentNode->prev != nullptr) {
-				otherCurrentNode = otherCurrentNode->prev;
+	Stack(const Stack& other) {
+		*this = other;
+	}
+
+	Stack& operator=(const Stack& other) {
+		if(&other != this) {
+			if(!Empty()) {
+				delete headNode;
+				headNode = nullptr;
 			}
-
-			while(otherCurrentNode != nullptr) {
-				Add(otherCurrentNode->data);
-				otherCurrentNode = otherCurrentNode->next;
+			if(!other.Empty()) {
+				headNode = new Node(*other.headNode);
 			}
-		
 		}
 
-	LinkedList& operator=(const LinkedList& other) {
-		(*this).~LinkedList();
-		
-		headNode = nullptr;
-		Node* otherCurrentNode = other.headNode;
-
-		while (otherCurrentNode->prev != nullptr) {
-			otherCurrentNode = otherCurrentNode->prev;
-		}
-
-		while (otherCurrentNode != nullptr) {
-			Add(otherCurrentNode->data);
-			otherCurrentNode = otherCurrentNode->next;
-		}
 		return *this;
 	}
 
-	~LinkedList() {
-		while(headNode != nullptr) {
-			Remove();
-		}
+	~Stack() {
 		delete headNode;
+		headNode = nullptr;
 	}
 
-	void Add(int value) {
-		if (headNode == nullptr) {
-			headNode = new Node(value);
-		}
-		else {
-			Node* prevTmp = headNode;
-			headNode->next = new Node(value);
-			headNode = headNode->next;
-			headNode->prev = prevTmp;
-		}
-		size++;
+	void Push(int value) {
+		headNode = new Node(value, headNode);
 	}
-	int Remove() {
-		if (headNode != nullptr) {
-			int tempReturn = headNode->data;
-			
-			Node* tmp = headNode;
-			
-			headNode = headNode->prev;
-			
-			if (headNode != nullptr) {
-				headNode->next = nullptr;
-			}
-			
-			delete tmp;
-			
-			if (size == 0) {
-				headNode = nullptr;
-			}
-
-			size--;
-			
-			return tempReturn;
+	int Pop() {
+		if(!Empty()) {
+			const int tempVal = headNode->GetData();
+			auto pOldTop = headNode;
+			headNode = headNode->Disconnect();
+			delete pOldTop;
+			return tempVal;
 		}
 
 		return -1;
 	}
 
-	int GetSize() const {
-		return size;
-	}
-};
-
-class Stack {
-private:
-	LinkedList linkedList;
-	int size = 0;
-public:
-	Stack() = default;
-	
-	Stack (const Stack& other):
-	linkedList(other.linkedList){
-		size = linkedList.GetSize();
-	}
-
-	~Stack() {
-		while(size > 0) {
-			Pop();
+	int Size() const {
+		if(!Empty()) {
+			return headNode->Count();
+		}
+		else {
+			return 0;
 		}
 	}
 
-	
-	void Push(int val);
-	int Pop();
-	int Size() const;
-	bool Empty() const;
+	bool Empty() const {
+		return headNode == nullptr;
+	}
 
+private:
+	Node* headNode = nullptr;
 };
+
 
 
