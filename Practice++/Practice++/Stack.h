@@ -1,4 +1,5 @@
 #pragma once
+#include <iterator>
 
 class Stack {
 class Node {
@@ -43,7 +44,58 @@ class Node {
 	};
 	
 public:
+public:
+	class Iterator {
+	public:
+		Iterator() = default;
 
+		Iterator(Node* pNode) :
+			pNode(pNode) {
+			//
+		}
+
+		Iterator& operator++() {
+			pNode = pNode->next;
+			return *this;
+		}
+
+		int& operator*() {
+			return pNode->data;
+		}
+
+		bool operator!=(Iterator rhs) const {
+			return pNode != rhs.pNode;
+		}
+
+	private:
+		Node* pNode;
+	};
+	
+	class ConstIterator {
+	public:
+		ConstIterator() = default;
+
+		ConstIterator(Node* pNode) :
+			pNode(pNode) {
+			//
+		}
+
+		ConstIterator& operator++() {
+			pNode = pNode->next;
+			return *this;
+		}
+
+		const int& operator*() const {
+			return pNode->data;
+		}
+
+		bool operator!=(ConstIterator rhs) const {
+			return pNode != rhs.pNode;
+		}
+
+	private:
+		Node* pNode;
+	};
 	Stack() = default;
 	
 	Stack(const Stack& other) {
@@ -95,6 +147,22 @@ public:
 
 	bool Empty() const {
 		return headNode == nullptr;
+	}
+
+	Iterator begin() {
+		return { headNode };
+	}
+
+	Iterator end() {
+		return {};
+	}
+
+	ConstIterator begin() const {
+		return{headNode};
+	}
+
+	ConstIterator end() const {
+		return {};
 	}
 
 private:
