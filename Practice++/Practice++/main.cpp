@@ -1,181 +1,173 @@
-#include <vector>
-#include <string>
 #include <iostream>
-#include <iterator>
-#include <algorithm>
-#include <sstream>
-#include <numeric>
+#include <string>
+#include <conio.h>
+#include <random>
 
-////////////////////////////////////////////////////////////////////////////
-//     !! HOMEWORK !!
-// use the C++ <algorithms> as extensively as you can for these problems!
-
-// you may not modify this
-struct Pube {
-	int num;
-	std::string str;
-	bool operator<(const Pube& rhs) const {
-		return num < rhs.num;
+class Dice {
+public:
+	int Roll(int nDice) {
+		int total = 0;
+		for (int n = 0; n < nDice; n++) {
+			total += d6(rng);
+		}
+		return total;
 	}
-	operator int() const {
-		return num;
+private:
+	std::uniform_int_distribution<int> d6 = std::uniform_int_distribution<int>(1, 6);
+	std::mt19937 rng = std::mt19937(std::random_device{}());
+};
+
+class MemeFighter {
+public:
+	void Punch (MemeFighter& other) const {
+		if(IsAlive() && other.IsAlive()) {
+			std::cout << name << " punches " << other.GetName()
+				<< "!\n";
+			ApplyDamageTo(other, power + Roll(2));
+		}
+	}
+	void TakeDamage(MemeFighter& other) {
+		hp -= other.power;
+		std::cout << name << " has taken " << other.power << " damage by " << other.name;
+	}
+	bool IsAlive() const {
+		return hp > 0;
+	}
+	const std::string& GetName() const {
+		return name;
+	}
+	int GetInitiative() const {
+		return speed * Roll(2);
+	}
+	void Tick() {
+		if(IsAlive()) {
+			const int recovery = Roll();
+			std::cout << name << " recovers " << recovery << " HP .\n";
+			hp += recovery;
+		}
+	}
+	
+protected:
+	MemeFighter(const std::string& name, int hp_, int speed_, int power_)
+	:
+	name(name),
+	hp(hp_),
+	speed(speed_),
+	power(power_)
+	{
+	std::cout << name << " enters the ring!\n";
+	}
+	int Roll(int nDice = 1) const {
+		return dice.Roll(nDice);
+	}
+	static void ApplyDamageTo(MemeFighter& target, int damage) {
+		target.hp -= damage;
+	}
+	
+protected:
+	std::string name = "Default";
+	int hp;
+	int power;
+	int speed;
+	
+private:
+	mutable Dice dice;
+};
+
+class MemeFrog : public MemeFighter {
+public:
+	MemeFrog(const std::string& name)
+		:
+		MemeFighter(name,69,7,14)
+	{
+		//
+	}
+	void SpecialMove(MemeFighter& other) const {
+		if(IsAlive() && other.IsAlive()) {
+			if(Roll() > 4) {
+				std::cout << GetName() << " attacks " << other.GetName() << " with rainbow beam!\n";
+				ApplyDamageTo(other, Roll(3) + 20);
+			}
+			else {
+				std::cout << GetName() << " falls off his unicycle.\n";
+			}
+		}
+	}
+	void Tick() {
+		if (IsAlive()) {
+			std::cout << GetName() << " is hurt by the bad AIDS!\n";
+			ApplyDamageTo(*this, Roll());
+			MemeFighter::Tick();
+		}
 	}
 };
 
-// write your remove_erase_if template function here!
-template<class T,typename P>
-void remove_erase_if(T& con, P pred) {
-	const auto new_end = std::remove_if(con.begin(), con.end(), pred);
-	con.erase(new_end, con.end());
-	
-}
+class MemeStoner : public MemeFighter {
+public:
+	MemeStoner(const std::string& name)
+		:
+	MemeFighter(name,80,40,10)
+	{
+		//
+	}
+	void SpecialMove() {
+		if(IsAlive()) {
+			if(Roll() > 3) {
+				std::cout << GetName() << " smokes the dank sticky icky, becoming " << "SUPER " << GetName() << "\n";
+				name = "Super " + name;
+				speed += 3;
+				power = (power * 69) / 42;
+				hp += 10;
+			}
+			else {
+				std::cout << GetName() << " spaces out.\n";
+			}
+		}
+	}
 
-// write your custom insertion operator here!
-std::ostream& operator<<(std::ostream& out, const Pube& rhs) {
-	return out << "(" << rhs.num << "," << rhs.str << ")";
+};
+
+
+
+void Engage(MemeFighter& f1, MemeFighter& f2) {
+	// pointers for sorting purposes
+	auto* p1 = &f1;
+	auto* p2 = &f2;
+	// determine attack order
+	if (p1->GetInitiative() < p2->GetInitiative()) {
+		std::swap(p1, p2);
+	}
+	// execute attacks
+	p1->Punch(*p2);
+	p2->Punch(*p1);
 }
 
 int main() {
-	// materiel (do not modify!)
-	const std::vector<Pube> numbers = {
-		{ 0,"zero" },
-		{ 9,"nine" },
-		{ 7,"seven" },
-		{ 2,"two" },
-		{ 8,"eight" },
-		{ 3,"three" },
-		{ 4,"four" },
-		{ 1,"one" },
-		{ 6,"six" },
-		{ 5,"five" }
-	};
-	const std::vector<Pube> memes = {
-		{ 3,"dat boi" },
-		{ 1,"yaaaas" },
-		{ 3,"soviet russia" },
-		{ 1,"damn daniel" },
-		{ 1,"hipster ariel" },
-		{ 3,"harambe" },
-		{ 2,"doge" },
-		{ 3,"cash me outside" },
-		{ 2,"henlo" },
-		{ 3,"kappa" }
-	};
-	const std::string nambies = "eight one six eight three three eight five four two nine six nine";
-	const std::string numpies = { 6, 6, 5, 0, 6, 1, 8, 6 };
+	MemeFrog f1("Dat Boi");
+	MemeStoner f2("Good Guy Greg");
 
-	// Problem 1:
-	// create a vector that contains 4 copies of each of the elements of memes
-	// sort it first by number descending (score from 3 to 1) and then name ascending
-	// output sorted meme list w/ score and name using custom insertion operator
-	std::cout << "<< Sort Memes >>" << std::endl;
-	{
-		// copy 4x
-		auto sorted = memes;
-		for(int n=0;n<3;n++) {
-			sorted.insert(sorted.end(), memes.begin(), memes.end());
-		}
-		// sort minor
-		std::sort(sorted.begin(),sorted.end(),[](const Pube& lhs, const Pube& rhs)
-		{
-			return lhs.str < rhs.str;
-		});
-		// sort major
-		std::stable_sort(sorted.begin(), sorted.end(), [](const Pube& lhs, const Pube& rhs) {
-			return lhs.num > rhs.num;
-		});
-		// write to console
-		std::copy(sorted.begin(), sorted.end(), std::ostream_iterator<Pube>(std::cout, "\n"));
+	while (f1.IsAlive() && f2.IsAlive()) {
+		// trade blows
+		Engage(f1, f2);
+		// special moves
+		f2.SpecialMove();
+		f1.SpecialMove(f2);
+		// end of turn maintainence
+		f1.Tick();
+		f2.Tick();
+
+		std::cout << "Press any key to continue...";
+		while (!_kbhit());
+		_getch();
+		std::cout << std::endl << std::endl;
 	}
-	std::cout << "============================================" << std::endl << std::endl;
 
-	// Problem 2:
-	// output nambies as string of digits without spaces
-	// (can be done in single statement!)
-	std::cout << "<< Number Words to Digits >>" << std::endl;
-	{
-		std::transform(
-		std::istream_iterator<std::string>(std::istringstream(nambies)),
-			std::istream_iterator<std::string>(),
-			std::ostream_iterator<int>(std::cout),
-			[&numbers](const std::string& word)
-		{
-			return std::find_if(numbers.begin(),numbers.end(),
-				[&word](const Pube& p)
-			{
-				return p.str == word;
-			})->num;
-		}
-		);
-		std::cout << std::endl;
+	if (f1.IsAlive()) {
+		std::cout << f1.GetName() << " is victorious!";
 	}
-	std::cout << "============================================" << std::endl << std::endl;
-
-	// Problem 3:
-	// output numpies as a string of words separated by spaces
-	// don't use std::find_if or other searches
-	std::cout << "<< Digits to Number Words >>" << std::endl;
-	{
-		auto sorted = numbers;
-		std::sort(sorted.begin(), sorted.end());
-		std::transform(numpies.begin(),numpies.end(),
-			std::ostream_iterator<std::string>(std::cout," "),
-			[&sorted](int n)
-		{
-			return sorted[n].str;
-		});
-		std::cout << std::endl;
+	else {
+		std::cout << f2.GetName() << " is victorious!";
 	}
-	std::cout << "============================================" << std::endl << std::endl;
-
-	// Problem 4:
-	// find the product of all numbers in nambies
-	// and output of course
-	std::cout << "<< Product >>" << std::endl;
-	{
-		std::vector<int> nums;
-		std::transform(
-		std::istream_iterator<std::string>(std::istringstream(nambies)),
-			std::istream_iterator<std::string>(),
-			std::back_inserter(nums),
-			[&numbers](const std::string& word)
-		{
-			return std::find_if(numbers.begin(),numbers.end(),
-				[&word](const Pube& p)
-			{
-				return p.str == word;
-			})->num;
-		});
-		std::cout << std::accumulate(nums.begin(), nums.end(), 1, std::multiplies<int>{}) << std::endl;
-	}
-	std::cout << "============================================" << std::endl << std::endl;
-
-	// Problem 5:
-	// find sums of corresponding nums in numbers and memes
-	// output as comma separated list
-	std::cout << "<< Parallel Sum >>" << std::endl;
-	{
-		std::transform(numbers.begin(), numbers.end(), memes.begin(),
-			std::ostream_iterator<int>(std::cout, "\n"), std::plus<int>{});
-		std::cout << std::endl;
-	}
-	std::cout << "============================================" << std::endl << std::endl;
-
-	// Problem 6:
-	// write a template function (not here, above int main())
-	// that will remove elements from vector based on unary predicate
-	// the following code should not be modified
-	std::cout << "<< Top Memes >>" << std::endl;
-	{
-		// copy to get non-const vector
-		auto maymays = memes;
-		// remove all memes with score below 3
-		remove_erase_if(maymays, [](const Pube& p) { return p.num < 3; });
-		// output results
-		std::copy(maymays.begin(), maymays.end(), std::ostream_iterator<Pube>(std::cout, "\n"));
-	}
-	std::cout << "============================================" << std::endl << std::endl;
-
-	std::cin.get();
+	while (!_kbhit());
 	return 0;
 }
