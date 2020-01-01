@@ -1,245 +1,181 @@
-#define _CRTDBG_MAP_ALLOC  
-#include <stdlib.h>  
-#include <crtdbg.h>  
-#include <conio.h>
-#include "ChiliString.h"
-#include "Stack.h"
+#include <vector>
+#include <string>
 #include <iostream>
+#include <iterator>
+#include <algorithm>
+#include <sstream>
+#include <numeric>
 
-void test1() {
-	Stack s;
-	s.Push(5);
-	s.Push(3);
-	if (s.Pop() == 3 && s.Pop() == 5 && s.Empty()) {
-		chili::print("    Test 1 passed!\n");
+////////////////////////////////////////////////////////////////////////////
+//     !! HOMEWORK !!
+// use the C++ <algorithms> as extensively as you can for these problems!
+
+// you may not modify this
+struct Pube {
+	int num;
+	std::string str;
+	bool operator<(const Pube& rhs) const {
+		return num < rhs.num;
 	}
-	else {
-		chili::print("*** Test 1 failed!\n");
+	operator int() const {
+		return num;
 	}
+};
+
+// write your remove_erase_if template function here!
+template<class T,typename P>
+void remove_erase_if(T& con, P pred) {
+	const auto new_end = std::remove_if(con.begin(), con.end(), pred);
+	con.erase(new_end, con.end());
+	
 }
 
-void test2() {
-	Stack s;
-	s.Push(5);
-	s.Push(3);
-	s.Push(3);
-	s.Push(3);
-	if (s.Size() == 4) {
-		chili::print("    Test 2 passed!\n");
-	}
-	else {
-		chili::print("*** Test 2 failed!\n");
-	}
-}
-
-void test3() {
-	Stack s;
-	s.Push(5);
-	s.Push(3);
-	s.Pop();
-	s.Push(69);
-	s.Push(69);
-	s.Push(69);
-	s.Push(69);
-	s.Pop();
-	s.Pop();
-	s.Pop();
-	if (s.Size() == 2) {
-		chili::print("    Test 3 passed!\n");
-	}
-	else {
-		chili::print("*** Test 3 failed!\n");
-	}
-}
-
-void test4() {
-	Stack s;
-	s.Push(5);
-	s.Push(3);
-	s.Pop();
-	s.Pop();
-	s.Pop();
-	s.Pop();
-	if (s.Size() == 0) {
-		chili::print("    Test 4 passed!\n");
-	}
-	else {
-		chili::print("*** Test 4 failed!\n");
-	}
-}
-
-void test5() {
-	Stack s;
-	s.Push(5);
-	s.Push(3);
-
-	Stack s2 = s;
-	s2.Pop();
-
-	if (s.Size() == 2 && s2.Pop() == 5) {
-		chili::print("    Test 5 passed!\n");
-	}
-	else {
-		chili::print("*** Test 5 failed!\n");
-	}
-}
-
-void test6() {
-	Stack s;
-	s.Push(5);
-	s.Push(3);
-
-	{
-		Stack s2 = s;
-		s2.Pop();
-	}
-
-	if (s.Size() == 2 && s.Pop() == 3) {
-		chili::print("    Test 6 passed!\n");
-	}
-	else {
-		chili::print("*** Test 6 failed!\n");
-	}
-}
-
-void test7() {
-	Stack s;
-	s.Push(5);
-	s.Push(3);
-
-	Stack s2;
-	s2 = s;
-	s2.Pop();
-
-	if (s.Size() == 2 && s2.Pop() == 5) {
-		chili::print("    Test 7 passed!\n");
-	}
-	else {
-		chili::print("*** Test 7 failed!\n");
-	}
-}
-
-void test8() {
-	Stack s;
-	s.Push(5);
-	s.Push(3);
-
-	{
-		Stack s2;
-		s2 = s;
-		s2.Pop();
-	}
-
-	if (s.Size() == 2 && s.Pop() == 3) {
-		chili::print("    Test 8 passed!\n");
-	}
-	else {
-		chili::print("*** Test 8 failed!\n");
-	}
-}
-
-void test9() {
-	Stack s;
-	s.Push(5);
-	s.Push(3);
-
-	{
-		Stack s2;
-		s2.Push(828374);
-		s2.Push(3454);
-		s2 = s;
-		s2.Pop();
-	}
-
-	if (s.Size() == 2 && s.Pop() == 3) {
-		chili::print("    Test 9 passed!\n");
-	}
-	else {
-		chili::print("*** Test 9 failed!\n");
-	}
-}
-void test10() {
-	Stack s;
-	s.Push(5);
-	s.Push(3);
-
-	s = s;
-
-	{
-		Stack s2;
-		s2.Push(828374);
-		s2.Push(3454);
-		s2 = s;
-		s2.Pop();
-	}
-
-	if (s.Size() == 2 && s.Pop() == 3) {
-		chili::print("    Test 10 passed!\n");
-	}
-	else {
-		chili::print("*** Test 10 failed!\n");
-	}
+// write your custom insertion operator here!
+std::ostream& operator<<(std::ostream& out, const Pube& rhs) {
+	return out << "(" << rhs.num << "," << rhs.str << ")";
 }
 
 int main() {
-	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
-	_CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDERR);
-	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
-	_CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDERR);
-	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
-	_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
+	// materiel (do not modify!)
+	const std::vector<Pube> numbers = {
+		{ 0,"zero" },
+		{ 9,"nine" },
+		{ 7,"seven" },
+		{ 2,"two" },
+		{ 8,"eight" },
+		{ 3,"three" },
+		{ 4,"four" },
+		{ 1,"one" },
+		{ 6,"six" },
+		{ 5,"five" }
+	};
+	const std::vector<Pube> memes = {
+		{ 3,"dat boi" },
+		{ 1,"yaaaas" },
+		{ 3,"soviet russia" },
+		{ 1,"damn daniel" },
+		{ 1,"hipster ariel" },
+		{ 3,"harambe" },
+		{ 2,"doge" },
+		{ 3,"cash me outside" },
+		{ 2,"henlo" },
+		{ 3,"kappa" }
+	};
+	const std::string nambies = "eight one six eight three three eight five four two nine six nine";
+	const std::string numpies = { 6, 6, 5, 0, 6, 1, 8, 6 };
 
-	test1();
-	test2();
-	test3();
-	test4();
-	test5();
-	test6();
-	test7();
-	test8();
-	test9();
-	test10();
-
-	/////////////////////////////////////////////////////////////////////
-	// I15 homework stuff!!
-	/////////////////////////////////////////////////////////////////////
-	// level 1
+	// Problem 1:
+	// create a vector that contains 4 copies of each of the elements of memes
+	// sort it first by number descending (score from 3 to 1) and then name ascending
+	// output sorted meme list w/ score and name using custom insertion operator
+	std::cout << "<< Sort Memes >>" << std::endl;
 	{
-		Stack s;
-		s.Push(520);
-		s.Push(79);
-		s.Push(8168118);
-		s.Push(6311369);
-
-		// multiply all elements by 10
-		for (auto& n : s) {
-			n *= 10;
+		// copy 4x
+		auto sorted = memes;
+		for(int n=0;n<3;n++) {
+			sorted.insert(sorted.end(), memes.begin(), memes.end());
 		}
+		// sort minor
+		std::sort(sorted.begin(),sorted.end(),[](const Pube& lhs, const Pube& rhs)
+		{
+			return lhs.str < rhs.str;
+		});
+		// sort major
+		std::stable_sort(sorted.begin(), sorted.end(), [](const Pube& lhs, const Pube& rhs) {
+			return lhs.num > rhs.num;
+		});
+		// write to console
+		std::copy(sorted.begin(), sorted.end(), std::ostream_iterator<Pube>(std::cout, "\n"));
+	}
+	std::cout << "============================================" << std::endl << std::endl;
 
-		// print out all elements
-		for (auto n : s) {
-			std::cout << n << ", ";
+	// Problem 2:
+	// output nambies as string of digits without spaces
+	// (can be done in single statement!)
+	std::cout << "<< Number Words to Digits >>" << std::endl;
+	{
+		std::transform(
+		std::istream_iterator<std::string>(std::istringstream(nambies)),
+			std::istream_iterator<std::string>(),
+			std::ostream_iterator<int>(std::cout),
+			[&numbers](const std::string& word)
+		{
+			return std::find_if(numbers.begin(),numbers.end(),
+				[&word](const Pube& p)
+			{
+				return p.str == word;
+			})->num;
 		}
+		);
 		std::cout << std::endl;
 	}
-	// level 2 (uncomment to challenge)
-	{
-		Stack s;
-		s.Push(520);
-		s.Push(79);
-		s.Push(8168118);
-		s.Push(6311369);
+	std::cout << "============================================" << std::endl << std::endl;
 
-		const Stack& cs = s;
-		for (auto& n : cs) {
-			std::cout << n << ", ";
-		}
+	// Problem 3:
+	// output numpies as a string of words separated by spaces
+	// don't use std::find_if or other searches
+	std::cout << "<< Digits to Number Words >>" << std::endl;
+	{
+		auto sorted = numbers;
+		std::sort(sorted.begin(), sorted.end());
+		std::transform(numpies.begin(),numpies.end(),
+			std::ostream_iterator<std::string>(std::cout," "),
+			[&sorted](int n)
+		{
+			return sorted[n].str;
+		});
 		std::cout << std::endl;
 	}
+	std::cout << "============================================" << std::endl << std::endl;
 
-	/////////////////////////////////////////////////////////////////////
+	// Problem 4:
+	// find the product of all numbers in nambies
+	// and output of course
+	std::cout << "<< Product >>" << std::endl;
+	{
+		std::vector<int> nums;
+		std::transform(
+		std::istream_iterator<std::string>(std::istringstream(nambies)),
+			std::istream_iterator<std::string>(),
+			std::back_inserter(nums),
+			[&numbers](const std::string& word)
+		{
+			return std::find_if(numbers.begin(),numbers.end(),
+				[&word](const Pube& p)
+			{
+				return p.str == word;
+			})->num;
+		});
+		std::cout << std::accumulate(nums.begin(), nums.end(), 1, std::multiplies<int>{}) << std::endl;
+	}
+	std::cout << "============================================" << std::endl << std::endl;
 
-	_CrtDumpMemoryLeaks();
-	while (!_kbhit());
+	// Problem 5:
+	// find sums of corresponding nums in numbers and memes
+	// output as comma separated list
+	std::cout << "<< Parallel Sum >>" << std::endl;
+	{
+		std::transform(numbers.begin(), numbers.end(), memes.begin(),
+			std::ostream_iterator<int>(std::cout, "\n"), std::plus<int>{});
+		std::cout << std::endl;
+	}
+	std::cout << "============================================" << std::endl << std::endl;
+
+	// Problem 6:
+	// write a template function (not here, above int main())
+	// that will remove elements from vector based on unary predicate
+	// the following code should not be modified
+	std::cout << "<< Top Memes >>" << std::endl;
+	{
+		// copy to get non-const vector
+		auto maymays = memes;
+		// remove all memes with score below 3
+		remove_erase_if(maymays, [](const Pube& p) { return p.num < 3; });
+		// output results
+		std::copy(maymays.begin(), maymays.end(), std::ostream_iterator<Pube>(std::cout, "\n"));
+	}
+	std::cout << "============================================" << std::endl << std::endl;
+
+	std::cin.get();
 	return 0;
 }
