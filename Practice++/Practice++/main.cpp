@@ -2,6 +2,7 @@
 #include <string>
 #include <conio.h>
 #include <random>
+#include <algorithm>
 
 class Dice {
 public:
@@ -39,14 +40,16 @@ public:
 	int GetInitiative() const {
 		return speed * Roll(2);
 	}
-	void Tick() {
+	virtual void Tick() {
 		if(IsAlive()) {
 			const int recovery = Roll();
 			std::cout << name << " recovers " << recovery << " HP .\n";
 			hp += recovery;
 		}
 	}
-	
+	virtual void SpecialMove(MemeFighter& other) = 0;
+
+	virtual ~MemeFighter() = default;
 protected:
 	MemeFighter(const std::string& name, int hp_, int speed_, int power_)
 	:
@@ -63,6 +66,7 @@ protected:
 	static void ApplyDamageTo(MemeFighter& target, int damage) {
 		target.hp -= damage;
 	}
+
 	
 protected:
 	std::string name = "Default";
@@ -82,7 +86,7 @@ public:
 	{
 		//
 	}
-	void SpecialMove(MemeFighter& other) const {
+	void SpecialMove(MemeFighter& other) override {
 		if(IsAlive() && other.IsAlive()) {
 			if(Roll() > 4) {
 				std::cout << GetName() << " attacks " << other.GetName() << " with rainbow beam!\n";
@@ -93,12 +97,15 @@ public:
 			}
 		}
 	}
-	void Tick() {
+	void Tick() override {
 		if (IsAlive()) {
 			std::cout << GetName() << " is hurt by the bad AIDS!\n";
 			ApplyDamageTo(*this, Roll());
 			MemeFighter::Tick();
 		}
+	}
+	~MemeFrog() {
+		std::cout << "Destroying MemeFrog " << name << "!\n";
 	}
 };
 
@@ -110,7 +117,7 @@ public:
 	{
 		//
 	}
-	void SpecialMove() {
+	void SpecialMove(MemeFighter& other) override {
 		if(IsAlive()) {
 			if(Roll() > 3) {
 				std::cout << GetName() << " smokes the dank sticky icky, becoming " << "SUPER " << GetName() << "\n";
@@ -123,6 +130,10 @@ public:
 				std::cout << GetName() << " spaces out.\n";
 			}
 		}
+	}
+	
+	~MemeStoner() {
+		std::cout << "Destroying MemeStoner " << name << "!\n";
 	}
 
 };
@@ -142,32 +153,75 @@ void Engage(MemeFighter& f1, MemeFighter& f2) {
 	p2->Punch(*p1);
 }
 
+void DoSpecials(MemeFighter& f1,MemeFighter& f2) {
+	// pointers for sorting purposes
+	auto* p1 = &f1;
+	auto* p2 = &f2;
+	// determine attack order
+	if(p1->GetInitiative() < p2->GetInitiative()) {
+		std::swap(p1, p2);
+	}
+	// execute attacks
+	p1->SpecialMove(*p2);
+	p2->SpecialMove(*p1);
+}
+
 int main() {
-	MemeFrog f1("Dat Boi");
-	MemeStoner f2("Good Guy Greg");
+	std::vector<MemeFighter*> t1 = {
+		new MemeFrog("Dat Boi"),
+		new MemeStoner("Good Guy Greg"),
+		new MemeFrog("the WB frog")
+	};
+	
+	std::vector<MemeFighter*> t2 = {
+		new MemeStoner("Chong"),
+		new MemeStoner("Scumbag Steve"),
+		new MemeFrog("Pepe")
+	};
 
-	while (f1.IsAlive() && f2.IsAlive()) {
-		// trade blows
-		Engage(f1, f2);
-		// special moves
-		f2.SpecialMove();
-		f1.SpecialMove(f2);
-		// end of turn maintainence
-		f1.Tick();
-		f2.Tick();
+	const auto alive_pred = [](MemeFighter* pf) { return pf->IsAlive(); };
 
+	while (
+		std::any_of(t1.begin(),t1.end(),alive_pred) &&
+		std::any_of(t2.begin(),t2.end(),alive_pred)
+		) {
+		std::random_shuffle(t1.begin(), t1.end());
+		std::partition(t1.begin(), t1.end(), alive_pred);
+		std::random_shuffle(t2.begin(), t2.end());
+		std::partition(t2.begin(), t2.end(), alive_pred);
+
+		for(size_t i =0;i<t1.size();i++) {
+			Engage(*t1[i], *t2[i]);
+			DoSpecials(*t1[i], *t2[i]);
+			std::cout << "-----------------------------------------\n";
+		}
+		std::cout << "========================================\n";
+
+		for (size_t i = 0; i < t1.size(); i++) {
+			t1[i]->Tick();
+			t2[i]->Tick();
+		}
+
+		std::cout << "==================================\n";
+		
 		std::cout << "Press any key to continue...";
 		while (!_kbhit());
 		_getch();
 		std::cout << std::endl << std::endl;
 	}
 
-	if (f1.IsAlive()) {
-		std::cout << f1.GetName() << " is victorious!";
+	if (std::any_of(t1.begin(),t1.end(),alive_pred)) {
+		std::cout << "Team ONE is victorious!\n";
 	}
 	else {
-		std::cout << f2.GetName() << " is victorious!";
+		std::cout << "Team TWO is victorious!\n";
 	}
+
+	for (size_t i = 0; i < t1.size(); i++) {
+		delete t1[i];
+		delete t2[i];
+	}
+	
 	while (!_kbhit());
 	return 0;
 }
