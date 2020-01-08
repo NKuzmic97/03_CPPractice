@@ -1,108 +1,93 @@
-#include <iostream>
 #include <string>
-#include <vector>
+#include <iostream>
 
-class Cat {
-public:
-	Cat() {
-		std::cout << "Constructing a Cat" << std::endl;
-	}
-	Cat(Cat&&) noexcept {
-		// cats wont be moved but instead copied if move constructor is not marked as noexcept
-		std::cout << "Moving a Cat" << std::endl;
-	}
+std::string ToBin(int n,int min_digits = 0) {
+	std::string bin_str;
 
-	Cat(const Cat&) {
-		std::cout << "Copying a Cat" << std::endl;
-	}
-};
-
-class Annoucer {
-public:
-	Annoucer(std::string name_)
-	:
-	name(name_)
-
-	{
-		std::cout << "Annoucer " << name << " created." << std::endl;
-	}
-	~Annoucer() noexcept {
-		std::cout << "Annoucer " << name << " deleted." << std::endl;
-		
-		//throw std::runtime_error("This program is dead");
-		// never throw exceptions from destructors
-	}
-private:
-	std::string name;
-};
-
-int sum(int a,int b) {
-	Annoucer j("j");
-	Annoucer k("k");
-
-
-	// this will get deleted by RAII when thrown exception
-	auto p = std::make_unique<Annoucer>("p");
-
-	// Line below leaks memory in case of exception thrown.
-	//auto p = new Annoucer("p");
-	
-	if(a==70) {
-		throw std::runtime_error("<a> is bad number!");
+	for(int count =0; n != 0 || count < min_digits; n>>=1,count++) {
+		bin_str.push_back(bool(n & 0b1) ? '1' : '0');
+		if(count == min_digits) {
+			break;
+		}
 	}
 
-	if(b==450) {
-		throw std::logic_error("<b> is bad number!");
-	}
-
-	Annoucer c("c");
-	
-	return a + b;
+	std::reverse(bin_str.begin(), bin_str.end());
+	return bin_str;
 }
 
-int f(int x,int y,int z) {
-	try {
-		return sum(x, y) * sum(y, z);
+enum Options {
+	Cat =     0b000001,
+	Dog =     0b000010,
+	Bear =    0b000100,
+	Wolf =	  0b001000,
+	Fox =     0b010000,
+	Chicken = 0b100000
+};
+
+std::string OptionToString( int option) {
+	std::string opt_string;
+
+	if( option & Cat) {
+		opt_string += "Cat";
 	}
-	catch (const std::runtime_error& err) {
-		std::cout << "Caught a std::runtime_error in f: " << err.what() << std::endl;
-		throw;
+	if (option & Dog) {
+		opt_string += "Dog";
 	}
+	if (option & Bear) {
+		opt_string += "Bear";
+	}
+	if (option & Wolf) {
+		opt_string += "Wolf";
+	}
+	if (option & Fox) {
+		opt_string += "Fox";
+	}
+	if (option & Chicken) {
+		opt_string += "Chicken";
+	}
+
+
+	return opt_string;
 }
 
 int main() {
-	
-	try {
-		std::cout << f(70,75,450) << std::endl;
-	}
-	catch(const std::runtime_error& err) {
-		std::cout << "Caught a std::runtime_error in main: " << err.what() << std::endl;
-	}
-	catch(const std::exception& e) {
-		std::cout << "Caught an std::exception in main: " << e.what() << std::endl;
-	}
-	catch(...) {
-		std::cout << "Caught *something* in main. " << std::endl;
-	}
+	/* const unsigned char a = 69;
+	const unsigned char b = 42;
+	const unsigned char c = 169;
+	const unsigned char d = 242;
 
-	std::cout << "-------------------------------------------"<< std::endl;
-	std::cout << "-------------------------------------------" << std::endl;
-	std::cout << "-------------------------------------------" << std::endl;
 
-	
-	std::vector<Cat> cats;
-	
-	std::cout << std::endl;
-	cats.emplace_back();
-	
-	std::cout << std::endl;
-	cats.emplace_back();
-	
-	std::cout << std::endl;
-	cats.emplace_back();
-	
-	std::cout << std::endl;
+	std::cout << ToBin(a,8) << " <- a" << std::endl;
+	std::cout << ToBin(b, 8) << " <- b" << std::endl;
+	std::cout << ToBin(c, 8) << " <- c" << std::endl;
+	std::cout << ToBin(d, 8) << " <- d" << std::endl;
+
+	unsigned int packed = 0;
+
+	packed = a;
+	std::cout << ToBin(packed, 32) << " <- p: xxxa" << std::endl;
+
+	std::cout << ToBin(b << 8, 32) << " <- b << 8" << std::endl;
+	packed |= b << 8;
+	std::cout << ToBin(packed, 32) << " <- p: xxba" << std::endl;
+
+	std::cout << ToBin(c << 16, 32) << " <- c << 16" << std::endl;
+	packed |= c << 16;
+	std::cout << ToBin(packed, 32) << " <- p: xcba" << std::endl;
+
+	std::cout << ToBin(d << 24, 32) << " <- d << 24" << std::endl;
+	packed = packed | d << 24;
+	std::cout << ToBin(packed, 32) << " <- p: dcba" << std::endl;
+
+	std::cout << ((packed & 0xFF0000) >> 16) << " - > c unpacked" << std::endl;
 
 	std::cin.get();
+
+	*/
+
+	std::cout << OptionToString(Options::Cat | Options::Dog | Options::Chicken) << std::endl;
+
+	
+	std::cin.get();
 	return 0;
-} 
+}
