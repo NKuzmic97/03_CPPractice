@@ -1,93 +1,63 @@
-#include <string>
 #include <iostream>
+#include <string>
+#include <conio.h>
+#include <map>
+#include <algorithm>
+#include <vector>
+#include <set>
 
-std::string ToBin(int n,int min_digits = 0) {
-	std::string bin_str;
+int main() {
+	/* USAGE OF STD::MAP */
+	
+	/* std::string response;
+	std::string command;
 
-	for(int count =0; n != 0 || count < min_digits; n>>=1,count++) {
-		bin_str.push_back(bool(n & 0b1) ? '1' : '0');
-		if(count == min_digits) {
-			break;
+	std::map<std::string, std::string> map;
+
+	//init
+
+	map.emplace("aaaaa", "bbbb");
+	map.insert({ "crabdance", "crab people, crab people!" });
+	map.insert({ "cashme","owsigh, hawbadah?" });
+	map.insert({ "so", "some dumb text bla bla" });
+
+	// remove_if doesn't work with associative containers
+	//std::remove_if(map.begin(), map.end(), [](auto& el) { return el.first.size() > 2; });
+
+
+	for(auto i=map.begin();i!=map.end();) {
+		if(i->first.size() > 2) {
+			i = map.erase(i);
+		}
+		else {
+			++i;
 		}
 	}
 
-	std::reverse(bin_str.begin(), bin_str.end());
-	return bin_str;
-}
-
-enum Options {
-	Cat =     0b000001,
-	Dog =     0b000010,
-	Bear =    0b000100,
-	Wolf =	  0b001000,
-	Fox =     0b010000,
-	Chicken = 0b100000
-};
-
-std::string OptionToString( int option) {
-	std::string opt_string;
-
-	if( option & Cat) {
-		opt_string += "Cat";
+	for(auto& key : map) {
+		std::cout << key.first << std::endl;
+		//key.first = "100"; // unallowed
 	}
-	if (option & Dog) {
-		opt_string += "Dog";
-	}
-	if (option & Bear) {
-		opt_string += "Bear";
-	}
-	if (option & Wolf) {
-		opt_string += "Wolf";
-	}
-	if (option & Fox) {
-		opt_string += "Fox";
-	}
-	if (option & Chicken) {
-		opt_string += "Chicken";
-	}
+	
+	std::cin >> command;
 
-
-	return opt_string;
-}
-
-int main() {
-	/* const unsigned char a = 69;
-	const unsigned char b = 42;
-	const unsigned char c = 169;
-	const unsigned char d = 242;
-
-
-	std::cout << ToBin(a,8) << " <- a" << std::endl;
-	std::cout << ToBin(b, 8) << " <- b" << std::endl;
-	std::cout << ToBin(c, 8) << " <- c" << std::endl;
-	std::cout << ToBin(d, 8) << " <- d" << std::endl;
-
-	unsigned int packed = 0;
-
-	packed = a;
-	std::cout << ToBin(packed, 32) << " <- p: xxxa" << std::endl;
-
-	std::cout << ToBin(b << 8, 32) << " <- b << 8" << std::endl;
-	packed |= b << 8;
-	std::cout << ToBin(packed, 32) << " <- p: xxba" << std::endl;
-
-	std::cout << ToBin(c << 16, 32) << " <- c << 16" << std::endl;
-	packed |= c << 16;
-	std::cout << ToBin(packed, 32) << " <- p: xcba" << std::endl;
-
-	std::cout << ToBin(d << 24, 32) << " <- d << 24" << std::endl;
-	packed = packed | d << 24;
-	std::cout << ToBin(packed, 32) << " <- p: dcba" << std::endl;
-
-	std::cout << ((packed & 0xFF0000) >> 16) << " - > c unpacked" << std::endl;
-
-	std::cin.get();
+	std::cout << map[command] << std::endl;
 
 	*/
 
-	std::cout << OptionToString(Options::Cat | Options::Dog | Options::Chicken) << std::endl;
-
 	
-	std::cin.get();
+	std::vector<int> input = { 1,3,1,1,3,5,0,3,9,6,4,4,7,6,4,5,6,1,0 };
+	std::set<int> seen;
+
+	for(int in : input) {
+		auto result = seen.insert(in);
+		if(result.second) {
+			std::cout << in << " ";
+		}
+	}
+
+	std::cout << std::endl;
+
+	while (!_kbhit());
 	return 0;
 }
