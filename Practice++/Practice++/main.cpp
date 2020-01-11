@@ -1,31 +1,47 @@
-#include <unordered_map>
-#include "Vec2.h"
+#include <conio.h>
+#include <memory>
 #include <iostream>
-#include <string>
+#include <unordered_map>
+#include <functional>
 
-struct HashVec2 {
-	template<typename T>
-	size_t operator()(const Vec2_<T>& vec) const {
-		std::hash<T> hasher;
-		auto hashx = hasher(vec.x);
-		auto hashy = hasher(vec.y);
-
-		hashx ^= hashy + 0x9e3779b9 + (hashx << 6) + (hashx >> 2);
-		return hashx;
-	}
+void Fifty(){
+	std::cout << "50" << std::endl;
 };
 
+void Fortytwo() {
+	std::cout << "42" << std::endl;
+};
+
+int DoubleNum(int x) {
+	return x * 2;
+}
+
+int TripleNum(int x) {
+	return x * 3;
+}
+
 int main() {
-	std::unordered_map<Vei2, std::string, HashVec2> map({
-		{{23,40},"twenty three"},
-		{{99,7000},"ninety nine"},
-		{{1000000,59},"milion"},
-		{{1337,420}, "elite"}
+	 std::unordered_map<std::string, std::function<void()>> sw;
 
-		});
+	 sw["fifty"] = []()
+	 {
+		 std::cout << "50" << std::endl;
+	 };
+	
+	 sw["forty-two"] = Fortytwo;
 
-	std::cout << map[{23, 40}] << std::endl;
+	 sw["forty-two"]();
 
-	std::cin.get();
+	/* int(*pFunc)(int);
+
+	pFunc = DoubleNum;
+
+	std::cout << pFunc(3) << std::endl;
+
+	pFunc = TripleNum;
+	std::cout << pFunc(3) << std::endl;
+	*/
+
+	while (!_kbhit());
 	return 0;
 }
