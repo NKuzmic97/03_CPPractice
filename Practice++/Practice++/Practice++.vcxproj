@@ -26,6 +26,7 @@
   <ItemGroup>
     <ClInclude Include="ChiliString.h" />
     <ClInclude Include="Stack.h" />
+    <ClInclude Include="Vec2.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
