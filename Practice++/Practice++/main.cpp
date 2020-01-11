@@ -1,40 +1,31 @@
+#include <unordered_map>
+#include "Vec2.h"
 #include <iostream>
 #include <string>
-#include <conio.h>
-#include <unordered_map>
+
+struct HashVec2 {
+	template<typename T>
+	size_t operator()(const Vec2_<T>& vec) const {
+		std::hash<T> hasher;
+		auto hashx = hasher(vec.x);
+		auto hashy = hasher(vec.y);
+
+		hashx ^= hashy + 0x9e3779b9 + (hashx << 6) + (hashx >> 2);
+		return hashx;
+	}
+};
 
 int main() {
-	// create uo map and init
+	std::unordered_map<Vei2, std::string, HashVec2> map({
+		{{23,40},"twenty three"},
+		{{99,7000},"ninety nine"},
+		{{1000000,59},"milion"},
+		{{1337,420}, "elite"}
 
-	std::unordered_map<std::string, int> map({
-		
-		{ "one",1 },
-		{ "two",2 },
-		{ "three",3 },
-		{ "four",4 },
-		{ "five",5 },
-		{ "six",6 },
-		{ "seven",7 },
-		{"eight",8},
-		{"nine",9},
-		{"zero",0}
-		
-		}
-	);
+		});
 
-	std::string input;
-	std::cin >> input;
+	std::cout << map[{23, 40}] << std::endl;
 
-	auto i = map.find(input);
-
-	// print val if key exists
-	if(i!= map.end()) {
-		std::cout << i->second << std::endl;
-	}
-	else {
-		std::cout << "Not found" << std::endl;
-	}
-
-	while (!_kbhit());
+	std::cin.get();
 	return 0;
 }

@@ -51,6 +51,10 @@ public:
 		return x * x + y * y;
 	}
 
+	bool operator==(const Vec2_& other) const {
+		return x == other.x && y == other.y;
+	}
+
 	Vec2_& Normalize() {
 		return *this = GetNormalized();
 	}
